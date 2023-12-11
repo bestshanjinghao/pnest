@@ -1,4 +1,14 @@
-import { Module } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 
+// src/modules/core/core.module.ts
 @Module({})
-export class CoreModule {}
+export class CoreModule {
+  static forRoot(): DynamicModule {
+    return {
+      module: CoreModule,
+      global: true,
+      providers: [],
+      exports: [],
+    };
+  }
+}
