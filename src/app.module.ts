@@ -7,7 +7,15 @@ import { CoreModule } from './modules/core/core.module';
 import { ExampleModule } from './modules/example/example.module';
 
 @Module({
-  imports: [ContentModule, CoreModule, ExampleModule],
+  imports: [
+    ContentModule,
+    ExampleModule,
+    CoreModule.forRoot({
+      config: {
+        name: '3R教室',
+      },
+    }),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
