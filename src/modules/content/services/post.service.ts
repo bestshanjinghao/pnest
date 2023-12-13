@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { isFunction, isNil } from 'lodash';
+import { isFunction, isNil, omit } from 'lodash';
 
 import { EntityNotFoundError, IsNull, Not, SelectQueryBuilder } from 'typeorm';
 

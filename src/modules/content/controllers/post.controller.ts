@@ -8,17 +8,23 @@ import {
   Patch,
   Post,
   Query,
+  SerializeOptions,
+  UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
+
+import { AppIntercepter } from '@/modules/core/providers';
 
 import { CreatePostDto, QueryPostDto, UpdatePostDto } from '../dtos';
 import { PostService } from '../services';
 
+@UseInterceptors(AppIntercepter)
 @Controller('posts')
 export class PostController {
   constructor(protected service: PostService) {}
 
   @Get()
+  @SerializeOptions({ groups: ['post-list'] })
   async list(
     @Query(
       /*
@@ -42,6 +48,7 @@ export class PostController {
   }
 
   @Get(':id')
+  @SerializeOptions({ groups: ['post-detail'] })
   async detail(
     // 通过id查询文章 为什么要new一个uuid的管道呢
     /*
@@ -57,6 +64,7 @@ export class PostController {
   }
 
   @Post()
+  @SerializeOptions({ groups: ['post-detail'] })
   async store(
     @Body(
       new ValidationPipe({
@@ -74,6 +82,7 @@ export class PostController {
   }
 
   @Patch()
+  @SerializeOptions({ groups: ['post-detail'] })
   async update(
     @Body(
       new ValidationPipe({
@@ -91,6 +100,7 @@ export class PostController {
   }
 
   @Delete(':id')
+  @SerializeOptions({ groups: ['post-detail'] })
   async delete(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.service.delete(id);
   }
