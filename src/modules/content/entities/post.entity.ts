@@ -4,11 +4,20 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
   PrimaryColumn,
+  Relation,
   UpdateDateColumn,
 } from 'typeorm';
 
 import { PostBodyType } from '../constants';
+
+import { CategoryEntity } from './category.entity';
+import { CommentEntity } from './comment.entity';
+import { TagEntity } from './tag.entity';
 
 // src/modules/content/entities/post.entity.ts
 @Exclude()
@@ -67,4 +76,29 @@ export class PostEntity extends BaseEntity {
     comment: '更新时间',
   })
   updatedAt: Date;
+
+  /**
+   * 通过queryBuilder生成的评论数量(虚拟字段)
+   */
+  @Expose()
+  commentCount: number;
+
+  @Expose()
+  @ManyToOne(() => CategoryEntity, (category) => category.posts, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  category: CategoryEntity;
+
+  @Expose()
+  @ManyToMany(() => TagEntity, (tag) => tag.posts, {
+    cascade: true,
+  })
+  @JoinTable()
+  tags: Relation<TagEntity>[];
+
+  @OneToMany(() => CommentEntity, (comment) => comment.post, {
+    cascade: true,
+  })
+  comments: Relation<CommentEntity>[];
 }
