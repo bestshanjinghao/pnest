@@ -3,7 +3,7 @@ import { DataSource, EventSubscriber } from 'typeorm';
 import { PostBodyType } from '../constants';
 import { PostEntity } from '../entities/post.entity';
 import { PostRepository } from '../repositories';
-import { SanitizeService } from '../services';
+import { SanitizeService } from '../services/sanitize.service';
 
 // src/modules/content/subscribers/post.subscriber.ts
 @EventSubscriber()
