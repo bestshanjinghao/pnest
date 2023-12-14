@@ -8,7 +8,8 @@ import { DatabaseModule } from '../database/database.module';
 import { PostController } from './controllers';
 import * as entities from './entities';
 import { PostRepository } from './repositories';
-import { PostService, SanitizeService } from './services';
+import { PostService } from './services';
+import { SanitizeService } from './services/sanitize.service';
 import { PostSubscriber } from './subscribers';
 
 @Module({
