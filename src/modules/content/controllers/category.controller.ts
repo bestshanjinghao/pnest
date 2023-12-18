@@ -9,10 +9,7 @@ import {
   Post,
   Query,
   SerializeOptions,
-  UseInterceptors,
 } from '@nestjs/common';
-
-import { AppIntercepter } from '@/modules/core/providers';
 
 import {
   CreateCategoryDto,
@@ -22,7 +19,7 @@ import {
 import { CategoryService } from '../services';
 
 // src/modules/content/controllers/category.controller.ts
-@UseInterceptors(AppIntercepter)
+// @UseInterceptors(AppIntercepter)
 @Controller('categories')
 export class CategoryController {
   constructor(protected service: CategoryService) {}

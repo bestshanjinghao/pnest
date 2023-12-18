@@ -9,15 +9,12 @@ import {
   Post,
   Query,
   SerializeOptions,
-  UseInterceptors,
 } from '@nestjs/common';
-
-import { AppIntercepter } from '@/modules/core/providers';
 
 import { CreatePostDto, QueryPostDto, UpdatePostDto } from '../dtos';
 import { PostService } from '../services';
 
-@UseInterceptors(AppIntercepter)
+// @UseInterceptors(AppIntercepter)
 @Controller('posts')
 export class PostController {
   constructor(protected service: PostService) {}

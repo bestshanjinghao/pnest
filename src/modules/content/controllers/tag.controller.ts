@@ -9,16 +9,12 @@ import {
   Post,
   Query,
   SerializeOptions,
-  UseInterceptors,
 } from '@nestjs/common';
-
-import { AppIntercepter } from '@/modules/core/providers';
 
 import { CreateTagDto, QueryCategoryDto, UpdateTagDto } from '../dtos';
 import { TagService } from '../services';
 
 // src/modules/content/controllers/tag.controller.ts
-@UseInterceptors(AppIntercepter)
 @Controller('tags')
 export class TagController {
   constructor(protected service: TagService) {}
