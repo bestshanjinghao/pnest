@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
 
+import { APP_PIPE } from '@nestjs/core';
+
 import { database } from './config';
 import { ContentModule } from './modules/content/content.module';
 import { CoreModule } from './modules/core/core.module';
+import { AppPipe } from './modules/core/providers';
 import { DatabaseModule } from './modules/database/database.module';
 
 @Module({
@@ -12,6 +15,17 @@ import { DatabaseModule } from './modules/database/database.module';
     DatabaseModule.forRoot(database),
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_PIPE,
+      useValue: new AppPipe({
+        transform: true,
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        forbidUnknownValues: true,
+        validationError: { target: false },
+      }),
+    },
+  ],
 })
 export class AppModule {}
