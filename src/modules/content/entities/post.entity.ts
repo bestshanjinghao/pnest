@@ -88,7 +88,7 @@ export class PostEntity extends BaseEntity {
     nullable: true,
     onDelete: 'SET NULL',
   })
-  category: CategoryEntity;
+  category: Relation<CategoryEntity>;
 
   @Expose()
   @ManyToMany(() => TagEntity, (tag) => tag.posts, {
