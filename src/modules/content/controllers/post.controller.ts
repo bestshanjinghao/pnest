@@ -10,7 +10,6 @@ import {
   Query,
   SerializeOptions,
   UseInterceptors,
-  ValidationPipe,
 } from '@nestjs/common';
 
 import { AppIntercepter } from '@/modules/core/providers';
@@ -26,22 +25,13 @@ export class PostController {
   @Get()
   @SerializeOptions({ groups: ['post-list'] })
   async list(
-    @Query(
-      /*
+    @Query() /*
        whitelist用于过滤掉没有添加验证的器的多余属性（但是如果该属性存在于DTO中且没有添加验证器，但又不想被过滤，你可以加上@Allow装饰器）
         example（我猜的）：
           在dto中 加入
           @Allow
           attribute: string
        */
-      new ValidationPipe({
-        transform: true,
-        whitelist: true,
-        forbidNonWhitelisted: true,
-        forbidUnknownValues: true,
-        validationError: { target: false },
-      }),
-    )
     options: QueryPostDto,
   ) {
     return this.service.paginate(options);
@@ -66,16 +56,7 @@ export class PostController {
   @Post()
   @SerializeOptions({ groups: ['post-detail'] })
   async store(
-    @Body(
-      new ValidationPipe({
-        transform: true,
-        whitelist: true,
-        forbidNonWhitelisted: true,
-        forbidUnknownValues: true,
-        validationError: { target: false },
-        groups: ['create'],
-      }),
-    )
+    @Body()
     data: CreatePostDto,
   ) {
     return this.service.create(data);
@@ -84,16 +65,7 @@ export class PostController {
   @Patch()
   @SerializeOptions({ groups: ['post-detail'] })
   async update(
-    @Body(
-      new ValidationPipe({
-        transform: true,
-        whitelist: true,
-        forbidNonWhitelisted: true,
-        forbidUnknownValues: true,
-        validationError: { target: false },
-        groups: ['update'],
-      }),
-    )
+    @Body()
     data: UpdatePostDto,
   ) {
     return this.service.update(data);

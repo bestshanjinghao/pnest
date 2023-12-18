@@ -12,11 +12,13 @@ import {
 } from 'class-validator';
 import { toNumber } from 'lodash';
 
+import { DtoValidation } from '@/modules/core/decorators';
 import { PaginateOptions } from '@/modules/database/types';
 
 /**
  * 标签分页查询验证
  */
+@DtoValidation({ type: 'query' })
 export class QueryTagDto implements PaginateOptions {
   @Transform(({ value }) => toNumber(value))
   @Min(1, { message: '当前页必须大于1' })
@@ -34,6 +36,7 @@ export class QueryTagDto implements PaginateOptions {
 /**
  * 标签创建验证
  */
+@DtoValidation({ groups: ['create'] })
 export class CreateTagDto {
   @MaxLength(255, {
     always: true,
@@ -54,6 +57,7 @@ export class CreateTagDto {
 /**
  * 标签更新验证
  */
+@DtoValidation({ groups: ['update'] })
 export class UpdateTagDto extends PartialType(CreateTagDto) {
   @IsUUID(undefined, { groups: ['update'], message: 'ID格式错误' })
   @IsDefined({ groups: ['update'], message: 'ID必须指定' })
