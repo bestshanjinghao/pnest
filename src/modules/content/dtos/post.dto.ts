@@ -19,11 +19,13 @@ import {
 
 import { isNil, toNumber } from 'lodash';
 
+import { IsDataExist } from '@/modules/core/constraints/data.exist.constraint';
 import { DtoValidation } from '@/modules/core/decorators';
 import { toBoolean } from '@/modules/core/helpers';
 import { PaginateOptions } from '@/modules/database/types';
 
 import { PostOrderType } from '../constants';
+import { CategoryEntity, TagEntity } from '../entities';
 
 /**
  * 文章分页查询验证
@@ -53,10 +55,28 @@ export class QueryPostDto implements PaginateOptions {
   @IsOptional()
   limit = 10;
 
+  @IsDataExist(CategoryEntity, {
+    always: true,
+    message: '分类不存在',
+  })
+  @IsUUID(undefined, {
+    each: true,
+    always: true,
+    message: 'ID格式不正确',
+  })
   @IsUUID(undefined, { message: 'ID格式错误' })
   @IsOptional()
   category?: string;
 
+  @IsDataExist(TagEntity, {
+    always: true,
+    message: '标签不存在',
+  })
+  @IsUUID(undefined, {
+    each: true,
+    always: true,
+    message: 'ID格式不正确',
+  })
   @IsUUID(undefined, { message: 'ID格式错误' })
   @IsOptional()
   tag?: string;
@@ -106,14 +126,21 @@ export class CreatePostDto {
   @IsOptional({ always: true })
   customOrder = 0;
 
+  @IsDataExist(CategoryEntity, {
+    message: '分类不存在',
+  })
   @IsUUID(undefined, {
-    each: true,
     always: true,
     message: 'ID格式不正确',
   })
   @IsOptional({ groups: ['update'] })
   category: string;
 
+  @IsDataExist(TagEntity, {
+    each: true,
+    always: true,
+    message: '标签不存在',
+  })
   @IsUUID(undefined, {
     each: true,
     always: true,
