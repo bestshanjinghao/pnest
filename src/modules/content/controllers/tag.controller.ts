@@ -11,6 +11,11 @@ import {
   SerializeOptions,
 } from '@nestjs/common';
 
+import {
+  DeleteWithTrashDto,
+  RestoreDto,
+} from '@/modules/restful/dtos/delete-with-trash.dto';
+
 import { CreateTagDto, QueryCategoryDto, UpdateTagDto } from '../dtos';
 import { TagService } from '../services';
 
@@ -55,9 +60,23 @@ export class TagController {
     return this.service.update(data);
   }
 
-  @Delete(':id')
-  @SerializeOptions({})
-  async delete(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.service.delete(id);
+  @Delete()
+  @SerializeOptions({ groups: ['post-list'] })
+  async delete(
+    @Body()
+    data: DeleteWithTrashDto,
+  ) {
+    const { ids, trash } = data;
+    return this.service.delete(ids, trash);
+  }
+
+  @Patch('restore')
+  @SerializeOptions({ groups: ['post-list'] })
+  async restore(
+    @Body()
+    data: RestoreDto,
+  ) {
+    const { ids } = data;
+    return this.service.restore(ids);
   }
 }
