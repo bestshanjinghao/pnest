@@ -33,6 +33,13 @@ import { CategoryEntity, TagEntity } from '../entities';
  */
 @DtoValidation({ type: 'query' })
 export class QueryPostDto implements PaginateOptions {
+  @MaxLength(100, {
+    always: true,
+    message: '搜索字符串长度不得超过$constraint1',
+  })
+  @IsOptional({ always: true })
+  search?: string;
+
   @Transform(({ value }) => toBoolean(value))
   @IsBoolean()
   @IsOptional()

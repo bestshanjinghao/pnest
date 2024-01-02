@@ -23,6 +23,8 @@ import {
   TagRepository,
 } from '../repositories';
 
+import { SearchType } from '../types';
+
 import { CategoryService } from './category.service';
 
 // 文章查询接口
@@ -40,6 +42,7 @@ export class PostService {
     protected categoryRepository: CategoryRepository,
     protected categoryService: CategoryService,
     protected tagRepository: TagRepository,
+    protected search_type: SearchType = 'against',
   ) {}
 
   /**
@@ -205,9 +208,44 @@ export class PostService {
 
     this.queryOrderBy(qb, orderBy);
     if (category) await this.queryByCategory(category, qb);
+    if (!isNil(options.search)) this.buildSearchQuery(qb, options.search);
     // 查询某个标签关联的文章
     if (tag) qb.where('tags.id = :id', { id: tag });
     if (callback) return callback(qb);
+    return qb;
+  }
+
+  protected async buildSearchQuery(
+    qb: SelectQueryBuilder<PostEntity>,
+    search: string,
+  ) {
+    if (this.search_type === 'like') {
+      qb.andWhere('title LIKE :search', { search: `%${search}%` })
+        .orWhere('body LIKE :search', { search: `%${search}%` })
+        .orWhere('summary LIKE :search', { search: `%${search}%` })
+        .orWhere('category.name LIKE :search', {
+          search: `%${search}%`,
+        })
+        .orWhere('tags.name LIKE :search', {
+          search: `%${search}%`,
+        });
+    } else if (this.search_type === 'against') {
+      qb.andWhere('MATCH(title) AGAINST (:search IN BOOLEAN MODE)', {
+        search: `${search}*`,
+      })
+        .orWhere('MATCH(body) AGAINST (:search IN BOOLEAN MODE)', {
+          search: `${search}*`,
+        })
+        .orWhere('MATCH(summary) AGAINST (:search IN BOOLEAN MODE)', {
+          search: `${search}*`,
+        })
+        .orWhere('MATCH(category.name) AGAINST (:search IN BOOLEAN MODE)', {
+          search: `${search}*`,
+        })
+        .orWhere('MATCH(tags.name) AGAINST (:search IN BOOLEAN MODE)', {
+          search: `${search}*`,
+        });
+    }
     return qb;
   }
 

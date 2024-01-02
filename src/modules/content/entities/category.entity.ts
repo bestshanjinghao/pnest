@@ -5,8 +5,9 @@ import {
   Column,
   DeleteDateColumn,
   Entity,
+  Index,
   OneToMany,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
   Relation,
   Tree,
   TreeChildren,
@@ -20,11 +21,12 @@ import { PostEntity } from './post.entity';
 @Entity('content_categories')
 export class CategoryEntity extends BaseEntity {
   @Expose()
-  @PrimaryColumn({ type: 'varchar', generated: 'uuid', length: 36 })
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Expose()
   @Column({ comment: '分类名称' })
+  @Index({ fulltext: true })
   name: string;
 
   @Expose({ groups: ['category-tree', 'category-list', 'category-detail'] })
