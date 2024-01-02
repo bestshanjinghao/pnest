@@ -1,13 +1,20 @@
 import { pick, unset } from 'lodash';
-import { FindOptionsUtils, FindTreeOptions, TreeRepository } from 'typeorm';
+import { FindOptionsUtils, FindTreeOptions } from 'typeorm';
 
+import { BaseTreeRepository } from '@/modules/database/base';
+import { OrderType, TreeChildrenResolve } from '@/modules/database/constants';
 import { CustomRepository } from '@/modules/database/decorators';
 
 import { CategoryEntity } from '../entities';
 
-// src/modules/content/repositories/category.repository.ts
 @CustomRepository(CategoryEntity)
-export class CategoryRepository extends TreeRepository<CategoryEntity> {
+export class CategoryRepository extends BaseTreeRepository<CategoryEntity> {
+  protected _qbName = 'category';
+
+  protected orderBy = { name: 'customOrder', order: OrderType.ASC };
+
+  protected _childrenResolve = TreeChildrenResolve.UP;
+
   /**
    * 构建基础查询器
    */
@@ -53,7 +60,6 @@ export class CategoryRepository extends TreeRepository<CategoryEntity> {
     const joinColumn = this.metadata.treeParentRelation!.joinColumns[0];
     const parentPropertyName =
       joinColumn.givenDatabaseName || joinColumn.databaseName;
-
     const qb = this.buildBaseQB().orderBy('category.customOrder', 'ASC');
     qb.where(
       `${escapeAlias('category')}.${escapeColumn(parentPropertyName)} IS NULL`,
@@ -87,7 +93,7 @@ export class CategoryRepository extends TreeRepository<CategoryEntity> {
       entity,
     );
     FindOptionsUtils.applyOptionsToTreeQueryBuilder(qb, options);
-    qb.orderBy(`category.customOrder`, 'ASC');
+    qb.orderBy('category.customOrder', 'ASC');
     if (options?.withTrashed) {
       qb.withDeleted();
       if (options?.onlyTrashed) qb.where(`category.deletedAt IS NOT NULL`);
@@ -113,7 +119,7 @@ export class CategoryRepository extends TreeRepository<CategoryEntity> {
       entity,
     );
     FindOptionsUtils.applyOptionsToTreeQueryBuilder(qb, options);
-    qb.orderBy(`category.customOrder`, 'ASC');
+    qb.orderBy('category.customOrder', 'ASC');
     if (options?.withTrashed) {
       qb.withDeleted();
       if (options?.onlyTrashed) qb.where(`category.deletedAt IS NOT NULL`);

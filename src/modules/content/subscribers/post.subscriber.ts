@@ -1,4 +1,7 @@
+import { Optional } from '@nestjs/common';
 import { DataSource, EventSubscriber } from 'typeorm';
+
+import { BaseSubscriber } from '@/modules/database/base/subcriber';
 
 import { PostBodyType } from '../constants';
 import { PostEntity } from '../entities/post.entity';
@@ -6,13 +9,20 @@ import { PostRepository } from '../repositories';
 import { SanitizeService } from '../services/sanitize.service';
 
 // src/modules/content/subscribers/post.subscriber.ts
+/**
+ * 文章模型观察者
+ */
 @EventSubscriber()
-export class PostSubscriber {
+export class PostSubscriber extends BaseSubscriber<PostEntity> {
+  protected entity = PostEntity;
+
   constructor(
     protected dataSource: DataSource,
-    protected sanitizeService: SanitizeService,
     protected postRepository: PostRepository,
-  ) {}
+    @Optional() protected sanitizeService?: SanitizeService,
+  ) {
+    super(dataSource);
+  }
 
   listenTo() {
     return PostEntity;
